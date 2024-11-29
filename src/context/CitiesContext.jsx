@@ -7,6 +7,7 @@ const URL = `http://localhost:8000`;
 
 function CitiesProvider({ children }) {
   const [cities, setCities] = useState([]);
+  const [currentCity, setCurrentCity] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(function () {
@@ -28,11 +29,29 @@ function CitiesProvider({ children }) {
     fetchCities();
   }, []);
 
+  async function getCity(id) {
+      try {
+        setIsLoading(true);
+
+        const res = await fetch(`${URL}/cities/${id}`);
+        const data = await res.json();
+        setCurrentCity((city) => (city = data));
+
+        console.log("data: ", data);
+      } catch (error) {
+        console.log("error: ", error);
+      } finally {
+        setIsLoading(false);
+      }
+  }
+
   return (
     <CitiesContext.Provider
       value={{
         cities,
         isLoading,
+        currentCity,
+        getCity,
       }}
     >
       {children}
@@ -42,7 +61,7 @@ function CitiesProvider({ children }) {
 
 function useCities() {
   const context = useContext(CitiesContext);
-  if(context === undefined) throw new Error('useCities is being used outside the scope of its provider')
+  if (context === undefined) throw new Error("useCities is being used outside the scope of its provider");
   return context;
 }
 

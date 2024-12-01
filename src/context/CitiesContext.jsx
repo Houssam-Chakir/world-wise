@@ -65,20 +65,16 @@ function CitiesProvider({ children }) {
     }
   }
 
-  async function deleteCity(targetCity) {
+  async function deleteCity(id) {
     console.log('Deleting...');
     try {
       setIsLoading(true);
 
-      const res = await fetch(`${URL}/cities`, {
+      const res = await fetch(`${URL}/cities/${id}`, {
         method: "DELETE",
-        body: JSON.stringify(targetCity),
-        headers: {
-          "Content-Type": "application/json",
-        },
       });
-      const data = await res.json();
-      setCities(data);
+
+      setCities(cities => cities.filter(city => city.id !== id));
     } catch (error) {
       console.log("error: ", error);
     } finally {

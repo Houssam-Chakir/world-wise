@@ -30,19 +30,60 @@ function CitiesProvider({ children }) {
   }, []);
 
   async function getCity(id) {
-      try {
-        setIsLoading(true);
+    try {
+      setIsLoading(true);
 
-        const res = await fetch(`${URL}/cities/${id}`);
-        const data = await res.json();
-        setCurrentCity((city) => (city = data));
+      const res = await fetch(`${URL}/cities/${id}`);
+      const data = await res.json();
+      setCurrentCity((city) => (city = data));
 
-        console.log("data: ", data);
-      } catch (error) {
-        console.log("error: ", error);
-      } finally {
-        setIsLoading(false);
-      }
+      console.log("data: ", data);
+    } catch (error) {
+      console.log("error: ", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function createCity(newCity) {
+    try {
+      setIsLoading(true);
+
+      const res = await fetch(`${URL}/cities`, {
+        method: "POST",
+        body: JSON.stringify(newCity),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      setCities((cities) => [...cities, newCity]);
+    } catch (error) {
+      console.log("error: ", error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function deleteCity(targetCity) {
+    console.log('Deleting...');
+    try {
+      setIsLoading(true);
+
+      const res = await fetch(`${URL}/cities`, {
+        method: "DELETE",
+        body: JSON.stringify(targetCity),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await res.json();
+      setCities(data);
+    } catch (error) {
+      console.log("error: ", error);
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   return (
@@ -52,6 +93,8 @@ function CitiesProvider({ children }) {
         isLoading,
         currentCity,
         getCity,
+        createCity,
+        deleteCity,
       }}
     >
       {children}

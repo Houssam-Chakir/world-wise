@@ -8,6 +8,10 @@ import BackButton from "./BackButton";
 import { useUrlPosition } from "../hooks/useUrlPosition";
 import Message from "./Message";
 import Spinner from "./Spinner";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import { useCities } from "../context/CitiesContext";
+import { useNavigate } from "react-router-dom";
 
 const BASE_URL = "https://api.bigdatacloud.net/data/reverse-geocode-client";
 
@@ -20,6 +24,10 @@ export function convertToEmoji(countryCode) {
 }
 
 function Form() {
+  const { createCity, isLoading } = useCities();
+
+  const navigateTo = useNavigate()
+
   const [cityName, setCityName] = useState("");
   const [country, setCountry] = useState("");
   const [isLoadingGeo, setIsLoadingGeo] = useState(false);
@@ -57,12 +65,29 @@ function Form() {
     [lat, lng]
   );
 
+  async function handleSubmit(e) {
+    e.preventDefault();
+    if (!cityName || !date) return;
+
+    const newCity = {
+      cityName,
+      country,
+      emoji,
+      date,
+      notes,
+      position: { lat, lng },
+    };
+
+    await createCity(newCity);
+    navigateTo('/app/cities')
+  }
+
   if (!lat && !lng) return <Message message='Start by clicking somewhere in the map' />;
   if (isLoadingGeo) return <Spinner />;
   if (geocodingError) return <Message message={geocodingError} />;
 
   return (
-    <form className={styles.form}>
+    <form className={`${styles.form} ${isLoading? styles.loading : ''}`} onSubmit={handleSubmit}>
       <div className={styles.row}>
         <label htmlFor='cityName'>City name</label>
         <input id='cityName' onChange={(e) => setCityName(e.target.value)} value={cityName} />
@@ -71,7 +96,8 @@ function Form() {
 
       <div className={styles.row}>
         <label htmlFor='date'>When did you go to {cityName}?</label>
-        <input id='date' onChange={(e) => setDate(e.target.value)} value={date} />
+        {/* <input id='date' onChange={(e) => setDate(e.target.value)} value={date} /> */}
+        <DatePicker id='date' onChange={(date) => setDate(date)} selected={date} />
       </div>
 
       <div className={styles.row}>

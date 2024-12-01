@@ -3,15 +3,18 @@ import styles from "./Map.module.css";
 import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from "react-leaflet";
 import { useEffect, useState } from "react";
 import { useCities } from "../context/CitiesContext";
+import { useGeolocation } from "../hooks/useGeolocation";
+import Button from "./Button";
 
 function Map() {
-  const navigateTo = useNavigate();
-  const { cities } = useCities();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [mapPosition, setMapPosition] = useState([40, 0]);
+  const { cities } = useCities();
+  const { isLoading: isLoadingPosition, positio: geolocationPosition, getPosition } = useGeolocation();
+  const navigateTo = useNavigate();
 
   const lat = searchParams.get("lat");
   const lng = searchParams.get("lng");
-  const [mapPosition, setMapPosition] = useState([40, 0]);
 
   useEffect(
     function () {
@@ -20,8 +23,15 @@ function Map() {
     [lat, lng, setMapPosition]
   );
 
+  useEffect(function () {
+    if(geolocationPosition) setMapPosition([geolocationPosition.lat, geolocationPosition.lng])
+  }, [geolocationPosition]);
+
   return (
     <div className={styles.mapContainer}>
+      <Button type='position' onClick={getPosition}>
+        {isLoadingPosition ? "Loading..." : "Use Your position"}
+      </Button>
       <MapContainer className={styles.map} center={mapPosition} zoom={6} scrollWheelZoom={true}>
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.fr/hot/copyright">OpenStreetMap</a> contributors'
@@ -50,14 +60,14 @@ function ChangeView({ position }) {
   return null;
 }
 
-function DetectClick({navigateTo, cityName}) {
+function DetectClick({ navigateTo, cityName }) {
   const map = useMapEvents({
     click: (e) => {
-      console.log('e: ', e);
-      navigateTo(`form?city=${cityName}&lat=${e.latlng.lat}&lng=${e.latlng.lng}`)
-    }
-  })
-  return null
+      console.log("e: ", e);
+      navigateTo(`form?city=${cityName}&lat=${e.latlng.lat}&lng=${e.latlng.lng}`);
+    },
+  });
+  return null;
 }
 
 export default Map;

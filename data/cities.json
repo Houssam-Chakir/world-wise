@@ -37,15 +37,39 @@
       "id": "98443197"
     },
     {
-      "id": "72eb",
+      "id": "274f",
+      "cityName": "Santa Cruz de la Zarza",
+      "country": "Spain",
+      "emoji": "🇪🇸",
+      "date": "2024-12-02T10:41:11.375Z",
+      "notes": "",
+      "position": {
+        "lat": "39.85915479295669",
+        "lng": "-3.1640625000000004"
+      }
+    },
+    {
+      "id": "5b14",
+      "cityName": "Sidi ech Chahmi",
+      "country": "Algeria",
+      "emoji": "🇩🇿",
+      "date": "2024-12-02T11:00:46.555Z",
+      "notes": "",
+      "position": {
+        "lat": "35.67514743608467",
+        "lng": "-0.5273437500000001"
+      }
+    },
+    {
+      "id": "b2e1",
       "cityName": "Casablanca",
       "country": "Morocco",
       "emoji": "🇲🇦",
-      "date": "2024-12-01T21:25:32.873Z",
-      "notes": "",
+      "date": "2024-12-02T11:37:39.276Z",
+      "notes": "where i live",
       "position": {
-        "lat": "33.55970664841198",
-        "lng": "-7.558593750000001"
+        "lat": "33.55512901742288",
+        "lng": "-7.553100585937501"
       }
     }
   ]
